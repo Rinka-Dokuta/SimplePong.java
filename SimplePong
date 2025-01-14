@@ -1,0 +1,57 @@
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+
+public class SimplePong extends JPanel implements ActionListener, KeyListener {
+    int ballX = 150, ballY = 100, ballDX = 5, ballDY = 5;
+    int paddleX = 50, paddleY = 250;
+    int paddleX2 = 500, paddleY2 = 250;
+    Timer timer = new Timer(5, this);
+
+    public SimplePong() {
+        JFrame frame = new JFrame("Simple Pong");
+        frame.setSize(600, 600);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.add(this);
+        frame.addKeyListener(this);
+        frame.setVisible(true);
+        timer.start();
+    }
+
+    public void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        g.fillRect(ballX, ballY, 20, 20); // Draw the ball
+        g.fillRect(paddleX, paddleY, 10, 60); // Draw the paddle
+        g.fillRect(paddleX2, paddleY2, 10, 60); // Draw the second paddle
+    }
+
+    public void actionPerformed(ActionEvent e) {
+        ballX += ballDX;
+        ballY += ballDY;
+        if (ballX < 0 || ballX > getWidth() - 10) ballDX *= -1; // Bounce ball off walls
+        if (ballY < 0 || ballY > getHeight() - 10) ballDY *= -1; // Bounce ball off top/bottom
+        //if (ballY > paddleY - 10 && ballX + 10 > paddleX && ballX < paddleX + 60) ballDY *= -1; // Bounce ball off paddle
+        if (ballX < paddleX + 20 && ballY + 20 > paddleY && ballY < paddleY + 100) ballDX *= -1;
+        if (ballX + 20 > paddleX2 && ballY + 20 > paddleY2 && ballY < paddleY2 + 100) ballDX *= -1;
+        repaint();
+    }
+
+    public void keyPressed(KeyEvent e) {
+        //if (e.getKeyCode() == KeyEvent.VK_LEFT && paddleX > 0) paddleX -= 10; // Move paddle left
+        //if (e.getKeyCode() == KeyEvent.VK_RIGHT && paddleX < getWidth() - 60) paddleX += 10; // Move paddle right
+        if (e.getKeyCode() == KeyEvent.VK_UP && paddleY > 0 ) paddleY -= 10; //Move paddle up
+        if (e.getKeyCode() == KeyEvent.VK_DOWN && paddleY < getHeight() - 60) paddleY += 10; //Move paddle down
+        if (e.getKeyCode() == KeyEvent.VK_W && paddleY2 > 0 ) paddleY2 -= 10; //Move second paddle up
+        if (e.getKeyCode() == KeyEvent.VK_S && paddleY2 < getHeight() - 60) paddleY2 += 10; //Move second paddle down
+
+    }
+
+    public void keyReleased(KeyEvent e) {}
+    public void keyTyped(KeyEvent e) {}
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(SimplePong::new);
+    }
+}
+
+
